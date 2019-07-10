@@ -16,7 +16,7 @@ function createChart(data_main,city,time_period,is_color,color,is_zoom,zoom_cent
 
   let svg        = d3.select('#chart').select("#svg1"),
       gMap       = svg.select("g"),
-      canvasSize = [600, 1000];
+      canvasSize = [800, 1000];
       
   if(is_zoom){
     var projection = d3.geoMercator()
