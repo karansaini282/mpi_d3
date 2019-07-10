@@ -5,18 +5,18 @@ var MAP_URL2 = "https://raw.githubusercontent.com/karansaini282/out_repo/master/
 var MAP_URL3 = "https://raw.githubusercontent.com/karansaini282/out_repo/master/d3_shp_chic.geojson";
 
 d3.json(ZIPCODE_URL).then(d=>{
-  createChart(d,'ny','8:30 - 9:00',false,'',false,'',0);},error=>{console.log(error);});
+  createChart(d,'sf','8:30 - 9:00',false,'',false,'',0);},error=>{console.log(error);});
 
 
 function createChart(data_main,city,time_period,is_color,color,is_zoom,zoom_center,zoom_no) {
   var zipcodes = data_main;
   var data = zipcodes.features;
-  var center = {'ny':[-72.975,39.7],'chic':[-87.12,40.37],'la':[-117.27,32.86],'sf':[-121.1,36.57]};
-  var zoom = {'ny':7.5,'chic':7.5,'la':7.7,'sf':7.8};
+  var center = {'ny':[-74.175,40.6],'chic':[-88.12,41.27],'la':[-118.81,33.36],'sf':[-122.77,37.05]};
+  var zoom = {'ny':8.5,'chic':7.9,'la':8.2,'sf':8.2};
 
-  let svg        = d3.select('#chart').select("svg"),
-      gMap       = svg.select("#g1"),
-      canvasSize = [1000, 1000];
+  let svg        = d3.select('#chart').select("#svg1"),
+      gMap       = svg.select("g"),
+      canvasSize = [700, 1000];
       
   if(is_zoom){
     var projection = d3.geoMercator()
@@ -28,13 +28,14 @@ function createChart(data_main,city,time_period,is_color,color,is_zoom,zoom_cent
     var projection = d3.geoMercator()
       .scale(Math.pow(2, zoom[city] + 5.34))
       .center(center[city])
-      .translate([(canvasSize[0]/2)-100,canvasSize[1]/2]); 
+      .translate([(canvasSize[0]/2)-50,canvasSize[1]/2]); 
   }
 
   var path = d3.geoPath()
     .projection(projection);
   
-  gMap.on('click',function(){createChart(data_main,city,time_period,is_color,color,true,projection.invert(d3.mouse(this)),zoom_no+1);});
+  gMap.on('click',function(){
+ console.log(projection.invert(d3.mouse(this)));   createChart(data_main,city,time_period,is_color,color,true,projection.invert(d3.mouse(this)),zoom_no+1);});
   
   // Let's create a path for each (new) zipcode shape
   gMap.selectAll(".zipcode")
@@ -67,11 +68,11 @@ function createChart(data_main,city,time_period,is_color,color,is_zoom,zoom_cent
         .data(plot_data, myKey)
         .style("fill", d => d.properties.color);
 
-    var gMap2 = svg.select("#g2");
+    var gMap2 = d3.select('#chart').select("#svg2").select('g');
     var pArea = [50, 50, 390, 460];
     var pSize = [pArea[2]-pArea[0], pArea[3]-pArea[1]];
     var legend = gMap2.append("g")
-      .attr("transform", `translate(${pArea[2]+300}, ${pArea[1]+10})`);
+      .attr("transform", `translate(10, ${pArea[1]+10})`);
 
     legend.append("rect")
       .attr("class", "legend--frame")
@@ -105,7 +106,7 @@ function createChart(data_main,city,time_period,is_color,color,is_zoom,zoom_cent
     var pSize2 = [pArea2[2]-pArea2[0], pArea2[3]-pArea2[1]];
     var palette2 = ['SteelBlue', 'SeaGreen', 'IndianRed', 'Yellow','SteelBlue', 'SeaGreen', 'IndianRed', 'Yellow','SteelBlue'];  
     var legend2 = gMap2.append("g")
-      .attr("transform", `translate(${pArea2[2]+300}, ${pArea2[1]+100})`);
+      .attr("transform", `translate(10, ${pArea2[1]+100})`);
 
     legend2.append("rect")
       .attr("class", "legend--frame")
@@ -143,7 +144,7 @@ function createChart(data_main,city,time_period,is_color,color,is_zoom,zoom_cent
     var pSize3 = [pArea3[2]-pArea3[0], pArea3[3]-pArea3[1]];
     var palette3 = ['green','lime','yellow','orange','red','darkred'];  
     var legend3 = gMap2.append("g")
-      .attr("transform", `translate(${pArea3[2]+300}, ${pArea3[1]+290})`);
+      .attr("transform", `translate(10, ${pArea3[1]+290})`);
 
     legend3.append("rect")
       .attr("class", "legend--frame")
@@ -178,7 +179,7 @@ function createChart(data_main,city,time_period,is_color,color,is_zoom,zoom_cent
     var pSize4 = [pArea4[2]-pArea4[0], pArea4[3]-pArea4[1]];
     
     var legend4 = gMap2.append("g")
-      .attr("transform", `translate(${pArea4[2]+295}, ${pArea4[1]+425})`);
+      .attr("transform", `translate(10, ${pArea4[1]+425})`);
 
     legend4.append("image")
       .attr("xlink:href", "https://raw.githubusercontent.com/karansaini282/out_repo/master/reset.jpg")
