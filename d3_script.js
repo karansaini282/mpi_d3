@@ -71,13 +71,13 @@ function createChart(data_main,city,time_period,is_color,color,is_zoom,zoom_cent
     var pArea = [50, 50, 390, 460];
     var pSize = [pArea[2]-pArea[0], pArea[3]-pArea[1]];
     var legend = gMap2.append("g")
-      .attr("transform", `translate(${pArea[2]+150}, ${pArea[1]+110})`);
+      .attr("transform", `translate(${pArea[2]+250}, ${pArea[1]+10})`);
 
     legend.append("rect")
       .attr("class", "legend--frame")
       .attr("x", -5)
       .attr("y", -5)
-      .attr("width", 60)
+      .attr("width", 110)
       .attr("height", 80);
 
     var legendItems = legend.selectAll(".legend--item--box")
@@ -105,7 +105,7 @@ function createChart(data_main,city,time_period,is_color,color,is_zoom,zoom_cent
     var pSize2 = [pArea2[2]-pArea2[0], pArea2[3]-pArea2[1]];
     var palette2 = ['SteelBlue', 'SeaGreen', 'IndianRed', 'Yellow','SteelBlue', 'SeaGreen', 'IndianRed', 'Yellow','SteelBlue'];  
     var legend2 = gMap2.append("g")
-      .attr("transform", `translate(${pArea2[2]+150}, ${pArea2[1]+200})`);
+      .attr("transform", `translate(${pArea2[2]+250}, ${pArea2[1]+100})`);
 
     legend2.append("rect")
       .attr("class", "legend--frame")
@@ -143,7 +143,7 @@ function createChart(data_main,city,time_period,is_color,color,is_zoom,zoom_cent
     var pSize3 = [pArea3[2]-pArea3[0], pArea3[3]-pArea3[1]];
     var palette3 = ['green','lime','yellow','orange','red','darkred'];  
     var legend3 = gMap2.append("g")
-      .attr("transform", `translate(${pArea3[2]+150}, ${pArea3[1]+390})`);
+      .attr("transform", `translate(${pArea3[2]+250}, ${pArea3[1]+290})`);
 
     legend3.append("rect")
       .attr("class", "legend--frame")
@@ -178,7 +178,7 @@ function createChart(data_main,city,time_period,is_color,color,is_zoom,zoom_cent
     var pSize4 = [pArea4[2]-pArea4[0], pArea4[3]-pArea4[1]];
     
     var legend4 = gMap2.append("g")
-      .attr("transform", `translate(${pArea4[2]+145}, ${pArea4[1]+525})`);
+      .attr("transform", `translate(${pArea4[2]+245}, ${pArea4[1]+425})`);
 
     legend4.append("image")
       .attr("xlink:href", "https://raw.githubusercontent.com/karansaini282/out_repo/master/reset.jpg")
