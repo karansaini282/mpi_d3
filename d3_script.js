@@ -1,22 +1,29 @@
 // Define URLs for our zipcode shapes, and restaurant data
-var ZIPCODE_URL = "https://raw.githubusercontent.com/karansaini282/out_repo/master/d3_data.geojson";
+var ZIPCODE_URL1 = "https://raw.githubusercontent.com/karansaini282/out_repo/master/d3_data_la.csv";
+var ZIPCODE_URL2 = "https://raw.githubusercontent.com/karansaini282/out_repo/master/d3_data_sf.csv";
+var ZIPCODE_URL3 = "https://raw.githubusercontent.com/karansaini282/out_repo/master/d3_data_ny.csv";
+var ZIPCODE_URL4 = "https://raw.githubusercontent.com/karansaini282/out_repo/master/d3_data_chic.csv";
 var MAP_URL1 = "https://raw.githubusercontent.com/karansaini282/out_repo/master/d3_shp_ca.geojson";
 var MAP_URL2 = "https://raw.githubusercontent.com/karansaini282/out_repo/master/d3_shp_ny.geojson";
 var MAP_URL3 = "https://raw.githubusercontent.com/karansaini282/out_repo/master/d3_shp_chic.geojson";
 
-d3.json(ZIPCODE_URL).then(d=>{
-  createChart(d,'sf','8:30 - 9:00',false,'',false,'',0);},error=>{console.log(error);});
+  createChart('sf','8:30 - 9:00',false,'',false,'',0);
 
 
-function createChart(data_main,city,time_period,is_color,color,is_zoom,zoom_center,zoom_no) {
+function createChart(city,time_period,is_color,color,is_zoom,zoom_center,zoom_no) {
+  var city_map_dict = {'sf':ZIPCODE_URL2,'la':ZIPCODE_URL1,'ny':ZIPCODE_URL3,'chic':ZIPCODE_URL4};
+  var city_map_url = city_map_dict[city];
+  d3.csv(city_map_url).then(data_main=>
+  {
+  
   var zipcodes = data_main;
-  var data = zipcodes.features;
+  var data = zipcodes;
   var center = {'ny':[-74.175,40.6],'chic':[-88.12,41.27],'la':[-118.81,33.36],'sf':[-122.77,37.05]};
   var zoom = {'ny':8.5,'chic':7.9,'la':8.2,'sf':8.2};
 
   let svg        = d3.select('#chart').select("#svg1"),
       gMap       = svg.select("g"),
-      canvasSize = [800, 1000];
+      canvasSize = [700, 1000];
       
   if(is_zoom){
     var projection = d3.geoMercator()
@@ -35,13 +42,13 @@ function createChart(data_main,city,time_period,is_color,color,is_zoom,zoom_cent
     .projection(projection);
   
   gMap.on('click',function(){
- console.log(projection.invert(d3.mouse(this)));   createChart(data_main,city,time_period,is_color,color,true,projection.invert(d3.mouse(this)),zoom_no+1);});
+ console.log(projection.invert(d3.mouse(this)));   createChart(city,time_period,is_color,color,true,projection.invert(d3.mouse(this)),zoom_no+1);});
   
   // Let's create a path for each (new) zipcode shape
   gMap.selectAll(".zipcode")
   .remove();
   
-  plot_data = data.filter(d=>d.properties.city==city).filter(d=>d.properties.time_period==time_period);
+  plot_data = data.filter(d=>d.time_period==time_period);
   
   var city_data_dict = {'sf':MAP_URL1,'la':MAP_URL1,'ny':MAP_URL2,'chic':MAP_URL3};
   var city_data_url = city_data_dict[city];
@@ -58,7 +65,7 @@ function createChart(data_main,city,time_period,is_color,color,is_zoom,zoom_cent
         .style("fill", "white");
 
     if(is_color){
-      plot_data = data.filter(d=>d.properties.city==city).filter(d=>d.properties.time_period==time_period).filter(d=>d.properties.color==color);
+      plot_data = data.filter(d=>d.time_period==time_period).filter(d=>d.color==color);
     }
     else{
       console.log('false');
@@ -66,7 +73,7 @@ function createChart(data_main,city,time_period,is_color,color,is_zoom,zoom_cent
 
     gMap.selectAll(".zipcode")
         .data(plot_data, myKey)
-        .style("fill", d => d.properties.color);
+        .style("fill", d => d.color);
 
     var gMap2 = d3.select('#chart').select("#svg2").select('g');
     var pArea = [50, 50, 390, 460];
@@ -85,7 +92,7 @@ function createChart(data_main,city,time_period,is_color,color,is_zoom,zoom_cent
       .data(["ny", "la", "chic", "sf"])
       .enter().append("g")
       .on("click", d => {
-        createChart(data_main,d,time_period,is_color,color,false,'',0);
+        createChart(d,time_period,is_color,color,false,'',0);
       });
     
     legendItems.append("rect")
@@ -121,7 +128,7 @@ function createChart(data_main,city,time_period,is_color,color,is_zoom,zoom_cent
          '9:30 - 10:00','10:00 - 10:30'])
       .enter().append("g")
       .on("click", d => {
-        createChart(data_main,city,d,is_color,color,is_zoom,zoom_center,zoom_no);
+        createChart(city,d,is_color,color,is_zoom,zoom_center,zoom_no);
       });
 
     legendItems2.append("rect")
@@ -138,7 +145,7 @@ function createChart(data_main,city,time_period,is_color,color,is_zoom,zoom_cent
         .attr("y", (d,i) => (9+i*20))
         .text((d, i) => d);
 
-    var net_dist = {'chic':['-10000:-500',   '-500:-250',   '-250:0',      '0:250',    '250:500',    '500:10000'],'sf':['-10000:-1000',  '-1000:-500',   '-500:0',      '0:500',    '500:1000',   '1000:10000'],'la':['-10000:-1000',  '-1000:-500',   '-500:0',      '0:500',    '500:1000',   '1000:10000'],'ny':['-10000:-2000',  '-2000:-1000',   '-1000:0',      '0:1000',    '1000:2000',   '2000:10000']};
+    var net_dist = {'chic':['0:400',  '400:800',   '800:1200',      '1200:1600',    '1600:3000',   '3000:15000'],'sf':['0:400',  '400:800',   '800:1200',      '1200:1600',    '1600:3000',   '3000:15000'],'la':['0:400',  '400:800',   '800:1200',      '1200:1600',    '1600:3000',   '3000:15000'],'ny':['0:800',  '800:1600',   '1600:2400',      '2400:3200',    '3200:6000',   '6000:15000']};
 
     var pArea3 = [50, 50, 390, 460];
     var pSize3 = [pArea3[2]-pArea3[0], pArea3[3]-pArea3[1]];
@@ -152,13 +159,13 @@ function createChart(data_main,city,time_period,is_color,color,is_zoom,zoom_cent
       .attr("y", -5)
       .attr("width", 110)
       .attr("height", 130)
-      .on("click",(d,i)=>{createChart(data_main,city,time_period,false,'',is_zoom,zoom_center,zoom_no);});
+      .on("click",(d,i)=>{createChart(city,time_period,false,'',is_zoom,zoom_center,zoom_no);});
 
     var legendItems3 = legend3.selectAll(".legend--item--box")
       .data(net_dist[city])
       .enter().append("g")
       .on("click", (d,i) => {
-        createChart(data_main,city,time_period,true,palette3[i],is_zoom,zoom_center,zoom_no);
+        createChart(city,time_period,true,palette3[i],is_zoom,zoom_center,zoom_no);
       });
 
     legendItems3.append("rect")
@@ -188,12 +195,14 @@ function createChart(data_main,city,time_period,is_color,color,is_zoom,zoom_cent
       .attr("width", 120)
       .attr("height", 60)
       .on("click", (d,i) => {
-        createChart(data_main,city,time_period,false,'',false,'',0);
+        createChart(city,time_period,false,'',false,'',0);
       });    
+  
+  });
   
   });
 }
 
 function myKey(d) {
-  return (d.properties.ct_id?d.properties.ct_id:d.properties.GEOID);
+  return (d.ct_id?d.ct_id:d.properties.GEOID);
 }
